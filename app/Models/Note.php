@@ -29,8 +29,7 @@ class Note extends Authenticatable
     {
         $fields = $request->only($this->fillable);
 
-        if ($created = self::create($fields))
-        {
+        if ($created = self::create($fields)) {
             return $created;
         }
 
@@ -39,13 +38,11 @@ class Note extends Authenticatable
 
     public function put(Request $request)
     {
-        if (!isset($request->id))
-        {
+        if (!isset($request->id)) {
             return false;
         }
 
-        if ($updated = Note::findOrFail($request->id)->update($request->only($this->fillable)))
-        {
+        if ($updated = Note::findOrFail($request->id)->update($request->only($this->fillable))) {
             return Note::findOrFail($request->id);
         }
 

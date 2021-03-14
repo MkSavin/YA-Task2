@@ -18,6 +18,7 @@ class NotesController extends Controller
     {
         if (empty($request->get('query'))) {
             $notes = Note::all();
+
             // file: /config/task.php
             $n = Config::get('task.n');
 
