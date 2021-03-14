@@ -6,28 +6,29 @@ use App\Models\Note;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 
 class NotesController extends Controller
 {
-    /*
-     *
-        Route::get('/notes', 'NotesController@list');
-        Route::post('/notes', 'NotesController@insert');
-        Route::get('/notes/{id}', 'NotesController@first');
-        Route::put('/notes/{id}', 'NotesController@update');
-        Route::delete('/notes/{id}', 'NotesController@delete');
-     * */
-
     /**
      * @param Request $request
      * @return JsonResponse
      */
     public function list(Request $request)
     {
-        if (!isset($request->query)) {
-            return $this->success(Note::all());
+        if (empty($request->get('query'))) {
+            $notes = Note::all();
+            // file: /config/task.php
+            $n = Config::get('task.n');
+
+            $notes->transform(function ($item) use ($n) {
+                $item->content = mb_substr($item->content, 0, $n);
+                return $item;
+            });
+
+            return $this->success($notes);
         } else {
-            return $this->success(Note::where('title', $request->query)->orWhere('content', $request->query)->get());
+            return $this->success(Note::where('title', $request->get('query'))->orWhere('content', $request->get('query'))->get());
         }
     }
 
